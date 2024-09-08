@@ -20,25 +20,27 @@ function Counter() {
 function Step() {
   const [step, setStep] = useState(1);
 
-  const handleStepDecrment = () => {
-    setStep((prev) => prev - 1);
-  };
-
-  const handleStepIncrement = () => {
-    setStep((prev) => prev + 1);
+  const handleSepSlid = (e) => {
+    const newValue = e.target.value;
+    setStep(+newValue);
   };
 
   return (
     <div className="step-box">
-      <button onClick={handleStepDecrment}>-</button>
-      <span>Step: {step}</span>
-      <button onClick={handleStepIncrement}>+</button>
-      <Count countState={step} />
+      <input
+        type="range"
+        min={0}
+        max={10}
+        value={step}
+        onChange={handleSepSlid}
+      />
+      Step: <span>{step}</span>
+      <Count countState={step} setStep={setStep} />
     </div>
   );
 }
 
-function Count({ countState }) {
+function Count({ countState, setStep }) {
   const [count, setCount] = useState(0);
 
   const handleCountDecrment = () => {
@@ -49,12 +51,34 @@ function Count({ countState }) {
     setCount((prev) => prev + countState);
   };
 
+  const handleCountChange = (e) => {
+    const newValue = e.target.value;
+
+    if (!isNaN(newValue)) {
+      setCount(+newValue);
+    }
+  };
+
+  const handleReset = () => {
+    setCount(0);
+    setStep(1);
+  };
+
   return (
     <div className="count-box">
-      <button onClick={handleCountDecrment}>-</button>
-      <span>Count: {count}</span>
-      <button onClick={handleCountIncrement}>+</button>
+      <div>
+        <button onClick={handleCountDecrment}>-</button>
+        <input
+          type="text"
+          value={count}
+          onChange={handleCountChange}
+          style={{ margin: "10px" }}
+        />
+        <button onClick={handleCountIncrement}>+</button>
+      </div>
       <Message count={count} />
+      {countState > 1 ||
+        (count !== 0 && <button onClick={handleReset}>Reset</button>)}
     </div>
   );
 }
